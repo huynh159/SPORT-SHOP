@@ -32,16 +32,27 @@ public class AuthService {
 
 	@Transactional
 	public void register(User user) {
-		// 1. Mã hóa mật khẩu trước khi lưu
+		// Kiểm tra trùng lặp trước khi xử lý
+		if (userRepository.findByUsername(user.getUsername()).isPresent()) {
+			throw new RuntimeException("Tên đăng nhập đã tồn tại!");
+		}
+		if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+			throw new RuntimeException("Email đã được sử dụng!");
+		}
+
+		// 1. Mã hóa mật khẩu
 		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		user.setEnabled(false);
 
 		// 2. Gán quyền ROLE_USER mặc định
-		roleRepository.findByName("ROLE_USER").ifPresent(role -> user.getRoles().add(role));
+		roleRepository.findByName("ROLE_USER").ifPresent(role -> {
+			user.getRoles().add(role);
+		});
 
 		// 3. Lưu User vào DB
 		User savedUser = userRepository.save(user);
 
-		// 4. Tạo mã Token xác nhận ngẫu nhiên
+		// 4. Tạo mã Token xác nhận
 		String token = UUID.randomUUID().toString();
 		VerificationToken verificationToken = new VerificationToken(token, savedUser);
 		tokenRepository.save(verificationToken);
