@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // Đừng quên dòng này để có CSS của thông báo
 import Login from './pages/Login';
+import AdminProduct from './pages/AdminProduct';
+  
 
 // Bạn có thể tạo thêm một trang Home đơn giản để test sau khi login
 const Home = () => <h1 style={{ textAlign: 'center' }}>Chào mừng đến với S-Mart!</h1>;
@@ -19,6 +21,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         
         {/* Sau này bạn sẽ thêm các Route cho Admin ở đây */}
+        <Route path="/admin/products" element={<AdminProduct />} />
         <Route path="/home" element={<Home />} />
         
         {/* Trang 404 nếu người dùng nhập sai URL */}
